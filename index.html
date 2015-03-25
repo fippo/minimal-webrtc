@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2014 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="description" content="WebRTC code samples">
+  <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+  <meta itemprop="description" content="Client-side WebRTC code samples">
+  <meta itemprop="image" content="../../../images/webrtc-icon-192x192.png">
+  <meta itemprop="name" content="WebRTC code samples">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#ffffff">
+
+  <base target="_blank">
+
+  <title>Do Evil Things</title>
+
+  <link rel="icon" sizes="192x192" href="../../../images/webrtc-icon-192x192.png">
+  <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/main.css" />
+
+</head>
+
+<body>
+
+  <div id="container">
+
+    <h1><a href="//webrtc.github.io/samples/" title="WebRTC samples homepage">WebRTC samples</a> <span>Do Evil Things</span></h1>
+
+    <div id="buttons">
+      <button id="startButton">Start</button>
+      <button id="answerButton" disabled>Set Answer</button>
+      <button id="sendButton" disabled>Send</button>
+      <button id="closeButton" disabled>Stop</button>
+    </div>
+
+    <div>
+      <h2>Send this</h2>
+      <div id="sendit"></div>
+
+      <h2>Paste the answer (or what you got) here</h2>
+      <input type="text" id="pasteit" size="115" maxLength="115"></input>
+
+    </div>
+    <div id="sendReceive">
+      <div id="send">
+        <h2>Send</h2>
+        <textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
+      </div>
+      <div id="receive">
+        <h2>Receive</h2>
+        <textarea id="dataChannelReceive" disabled></textarea>
+      </div>
+    </div>
+
+    <p>If you got an offer, paste it, hit start. Wait for the answer, send it to your peer.</p>
+    <p>To get an offer, hit start. Paste answer from your partner and click "set answer". Needs to be very fast apparently, this seems to be a TURN related issue.</p>
+    <p>Eventually, the send field should go to enabled. You're connected.</p>
+  </div>
+
+  <script src="js/adapter.js"></script>
+  <script src="js/evil.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
