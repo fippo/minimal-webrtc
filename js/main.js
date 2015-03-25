@@ -39,6 +39,7 @@ function createConnection() {
   dataChannelSend.placeholder = '';
   var servers = {
     iceServers: [
+      // bring your own turn server, these credentials will expire soon
       {username: "1427391317", credential: "yaRtZa0/GJOmOHy4ONLI3kHCJ6E=", url: "turn:104.130.195.95"}
     ],
     iceTransports: 'relay'
