@@ -7,8 +7,12 @@ function reduce(desc) {
       line.indexOf('a=ice-pwd:') === 0 ||
       line.indexOf('a=fingerprint:') === 0;
   });
-  lines = lines.sort().reverse().slice(0, 4); // chop off extra cands
+  lines = lines.sort().reverse();
   // why is chrome reporting more than one candidate?
+  // pick last candidate
+  //lines = lines.slice(0, 3).concat(lines[4]);
+
+  var firstcand = true;
   var comp = lines.map(function (line) {
     switch(line.split(':')[0]) {
       case 'a=fingerprint':
@@ -27,13 +31,20 @@ function reduce(desc) {
         // take foundation, priority + ip/port from candidate, encode
         // not sure if foundation is required
         // can I have sprintf("%4c%4c%4c%2c") please? pike rocks
-        return [parseInt(parts[0], 10), parseInt(parts[3], 10), ip, parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
+        // since chrome (for whatever reason) generates two candidates with the same foundation, ip and different port
+        if (firstcand) {
+          firstcand = false;
+          return [parseInt(parts[0], 10), parseInt(parts[3], 10), ip, parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
+        } else {
+          return [parseInt(parts[3], 10), parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
+        }
     }
   })
   return [desc.type === 'offer' ? 'O' : 'A'].concat(comp).join(',');
 }
 
 function expand(str) {
+  console.log('expand', str);
   var comp = str.split(',');
   var sdp = ['v=0',
     'o=- 5498186869896684180 2 IN IP4 127.0.0.1',
@@ -51,7 +62,9 @@ function expand(str) {
   sdp.push('a=ice-ufrag:' + comp[1]);
   sdp.push('a=ice-pwd:' + comp[2]);
   sdp.push('a=fingerprint:sha-256 ' + atob(comp[3]).split('').map(function (c) { var d = c.charCodeAt(0); var e = c.charCodeAt(0).toString(16).toUpperCase(); if (d < 16) e = '0' + e; return e; }).join(':'));
-  var candparts = comp.splice(4).map(function (c) { return parseInt(c, 32); });
+  var candparts;
+  console.log('comp len', comp.length);
+  candparts = comp.splice(4, 4).map(function (c) { return parseInt(c, 32); });
   var ip = [(candparts[2] >> 24) & 0xff, (candparts[2] >> 16) & 0xff, (candparts[2] >> 8) & 0xff, candparts[2] & 0xff].join('.');
   var cand = ['a=candidate:' + candparts[0],
      '1', 'udp',
@@ -61,5 +74,17 @@ function expand(str) {
      'typ host' // well, not a host cand but...
   ];
   sdp.push(cand.join(' '));
-  return {type: comp[0] === 'O' ? 'offer' : 'answer', sdp:sdp.join('\r\n') + '\r\n'};
+  // parse subsequent candidates
+  console.log(comp);
+  for (var i = 4; i < comp.length; i += 2) {
+    cand = ['a=candidate:' + candparts[0], // foundation stays the same
+       '1', 'udp',
+       parseInt(comp[i], 32), // priority changes
+       ip, // ip stays the same
+       parseInt(comp[i+1], 32), // port changes 
+       'typ host' // well, not a host cand but...
+    ];
+    sdp.push(cand.join(' '));
+  }
+  return {type: comp[0] === 'O' ? 'offer' : 'answer', sdp: sdp.join('\r\n') + '\r\n'};
 }
