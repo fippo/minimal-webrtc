@@ -59,18 +59,18 @@ function createConnection() {
       dataConstraint);
   trace('Created send data channel');
 
-  localConnection.onicecandidate = iceCallback1;
+  localConnection.onicecandidate = iceCallback;
   localConnection.ondatachannel = receiveChannelCallback;
   sendChannel.onopen = onSendChannelStateChange;
   sendChannel.onclose = onSendChannelStateChange;
 
   if (!pasteit.value) {
-    localConnection.createOffer(gotDescription1, onCreateSessionDescriptionError);
+    localConnection.createOffer(gotDescription, onCreateSessionDescriptionError);
   } else {
     localConnection.setRemoteDescription(new RTCSessionDescription(expand(pasteit.value)),
       function () {
         console.log('yay');
-        localConnection.createAnswer(gotDescription2,
+        localConnection.createAnswer(gotDescription,
                                      onCreateSessionDescriptionError);
       },
       function (err) {
@@ -116,21 +116,17 @@ function closeDataChannels() {
   enableStartButton();
 }
 
-function gotDescription1(desc) {
+function gotDescription(desc) {
   localConnection.setLocalDescription(desc);
 }
 
-function gotDescription2(desc) {
-  localConnection.setLocalDescription(desc);
-}
-
-function iceCallback1(event) {
+function iceCallback(event) {
   trace('local ice callback');
   if (!event.candidate) {
     answerButton.disabled = !(localConnection.localDescription.type === 'offer');
     var min = reduce(localConnection.localDescription);
     console.log('offer', min.length, min);
-    send.innerText = min;
+    send.innerHTML = min;
   }
 }
 
