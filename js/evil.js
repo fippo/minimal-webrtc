@@ -32,9 +32,10 @@ function reduce(desc) {
         // not sure if foundation is required
         // can I have sprintf("%4c%4c%4c%2c") please? pike rocks
         // since chrome (for whatever reason) generates two candidates with the same foundation, ip and different port
+        // (possibly the reason for this is multiple local interfaces but still...)
         if (firstcand) {
           firstcand = false;
-          return [parseInt(parts[0], 10), parseInt(parts[3], 10), ip, parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
+          return [parseInt(parts[3], 10), ip, parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
         } else {
           return [parseInt(parts[3], 10), parseInt(parts[5])].map(function (a) { return a.toString(32); }).join(',');
         }
@@ -44,7 +45,6 @@ function reduce(desc) {
 }
 
 function expand(str) {
-  console.log('expand', str);
   var comp = str.split(',');
   var sdp = ['v=0',
     'o=- 5498186869896684180 2 IN IP4 127.0.0.1',
@@ -63,21 +63,19 @@ function expand(str) {
   sdp.push('a=ice-pwd:' + comp[2]);
   sdp.push('a=fingerprint:sha-256 ' + atob(comp[3]).split('').map(function (c) { var d = c.charCodeAt(0); var e = c.charCodeAt(0).toString(16).toUpperCase(); if (d < 16) e = '0' + e; return e; }).join(':'));
   var candparts;
-  console.log('comp len', comp.length);
-  candparts = comp.splice(4, 4).map(function (c) { return parseInt(c, 32); });
-  var ip = [(candparts[2] >> 24) & 0xff, (candparts[2] >> 16) & 0xff, (candparts[2] >> 8) & 0xff, candparts[2] & 0xff].join('.');
-  var cand = ['a=candidate:' + candparts[0],
+  candparts = comp.splice(4, 3).map(function (c) { return parseInt(c, 32); });
+  var ip = [(candparts[1] >> 24) & 0xff, (candparts[1] >> 16) & 0xff, (candparts[1] >> 8) & 0xff, candparts[1] & 0xff].join('.');
+  var cand = ['a=candidate:0',
      '1', 'udp',
-     candparts[1],
+     candparts[0],
      ip,
-     candparts[3],
+     candparts[2],
      'typ host' // well, not a host cand but...
   ];
   sdp.push(cand.join(' '));
   // parse subsequent candidates
-  console.log(comp);
   for (var i = 4; i < comp.length; i += 2) {
-    cand = ['a=candidate:' + candparts[0], // foundation stays the same
+    cand = ['a=candidate:0',
        '1', 'udp',
        parseInt(comp[i], 32), // priority changes
        ip, // ip stays the same
