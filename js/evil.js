@@ -67,14 +67,14 @@ function expand(str) {
   var ip = [(candparts[0] >> 24) & 0xff, (candparts[0] >> 16) & 0xff, (candparts[0] >> 8) & 0xff, candparts[0] & 0xff].join('.');
   var cand = ['a=candidate:0', // foundation 0
      '1', 'udp',
-     '0', // priority 0
+     '1', // priority 1
      ip,
      candparts[1],
      'typ host' // well, not a host cand but...
   ];
   sdp.push(cand.join(' '));
   // parse subsequent candidates
-  var prio = 1;
+  var prio = 2;
   for (var i = 4; i < comp.length; i++) {
     cand = ['a=candidate:0',
        '1', 'udp',
