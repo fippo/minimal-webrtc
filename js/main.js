@@ -22,6 +22,9 @@ var closeButton = document.querySelector('button#closeButton');
 var paste = document.getElementById('pasteit');
 var send = document.getElementById('sendit');
 
+// bring your own turn server, these credentials will expire soon
+var iceServers = {username: "1427640701", credential: "TkFDhVCMY1CCS8ZZZzsoDQdE8Xc=", url: "turn:104.130.198.83"};
+
 startButton.onclick = createConnection;
 answerButton.onclick = setAnswer;
 sendButton.onclick = sendData;
@@ -38,10 +41,7 @@ function disableSendButton() {
 function createConnection() {
   dataChannelSend.placeholder = '';
   var servers = {
-    iceServers: [
-      // bring your own turn server, these credentials will expire soon
-      {username: "1427391317", credential: "yaRtZa0/GJOmOHy4ONLI3kHCJ6E=", url: "turn:104.130.195.95"}
-    ],
+    iceServers: [iceServers],
     iceTransports: 'relay'
   };
   pcConstraint = null;
@@ -120,6 +120,16 @@ function gotDescription(desc) {
   localConnection.setLocalDescription(desc);
 }
 
+function formatPriority(priority) {
+  var s = '';
+  s += (priority >> 24);
+  s += ' | ';
+  s += (priority >> 8) & 0xFFFF;
+  s += ' | ';
+  s += priority & 0xFF;
+  return s;
+}
+
 function iceCallback(event) {
   trace('local ice callback');
   if (!event.candidate) {
@@ -127,6 +137,9 @@ function iceCallback(event) {
     var min = reduce(localConnection.localDescription);
     console.log('offer', min.length, min);
     send.innerHTML = min;
+  } else {
+    var cand = event.candidate.candidate.split(' ');
+    console.log(cand[0], formatPriority(cand[3]), cand[7], cand[4]);
   }
 }
 
