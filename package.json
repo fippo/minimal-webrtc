@@ -1,0 +1,24 @@
+{
+  "name": "minimal-webrtc-sdp",
+  "version": "1.0.0",
+  "description": "compress webrtc sdp messages",
+  "main": "js/sdp-minimizer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fippo/minimal-webrtc.git"
+  },
+  "keywords": [
+    "webrtc",
+    "sdp",
+    "signal"
+  ],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/fippo/minimal-webrtc/issues"
+  },
+  "homepage": "https://github.com/fippo/minimal-webrtc#readme"
+}
