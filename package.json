@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "compress webrtc sdp messages",
   "main": "js/sdp-minimizer.js",
+  "browser": {
+    "js/btoa.js": false
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

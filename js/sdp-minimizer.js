@@ -1,3 +1,8 @@
+var btoa = typeof window !== 'undefined' ? window.btoa : require('./btoa.js');
+
+exports.reduce = reduce;
+exports.expand = expand;
+
 function reduce(desc) {
   var sdp = desc.sdp;
   var lines = sdp.split('\r\n');
