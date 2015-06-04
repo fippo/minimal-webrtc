@@ -1,9 +1,8 @@
-var btoa;
-if (typeof exports === 'undefined') {
-  btoa = window.btoa;
-}
-else {
-  btoa = typeof window !== 'undefined' ? window.btoa : require('./btoa.js');
+var b2a = typeof btoa !== 'undefined'
+    ? btoa
+    : require('./btoa.js')
+;
+if (typeof exports !== 'undefined') {
   exports.reduce = reduce;
   exports.expand = expand;
 }
@@ -30,7 +29,7 @@ function reduce(desc) {
           return parseInt(h, 16);
         });
         // b64 is slightly more concise than colon-hex
-        return btoa(String.fromCharCode.apply(String, hex));
+        return b2a(String.fromCharCode.apply(String, hex));
       case 'a=ice-pwd':
         return line.substr(10); // already b64
       case 'a=ice-ufrag':
