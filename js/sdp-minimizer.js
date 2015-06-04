@@ -1,7 +1,12 @@
-var btoa = typeof window !== 'undefined' ? window.btoa : require('./btoa.js');
-
-exports.reduce = reduce;
-exports.expand = expand;
+var btoa;
+if (typeof exports === 'undefined') {
+  btoa = window.btoa;
+}
+else {
+  btoa = typeof window !== 'undefined' ? window.btoa : require('./btoa.js');
+  exports.reduce = reduce;
+  exports.expand = expand;
+}
 
 function reduce(desc) {
   var sdp = desc.sdp;
